@@ -9,9 +9,6 @@
     "Socket.io",
     "Node.js OS"
   ],
-  "scripts": {
-      "start": "node index.js"
-  }
   "bugs": {
     "url": "https://github.com/jjwallace/grow-bot-prototype/issues",
     "email": "jjaywallace@gmail.com.com"
@@ -25,5 +22,8 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:jjwallace/grow-bot-prototype.git"
+  },
+  "scripts": {
+      "start": "node index.js"
   }
 }
