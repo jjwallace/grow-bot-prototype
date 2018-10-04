@@ -31,8 +31,8 @@ io.on('connection', function (socket) {
 
 });
 
-http.listen(5001, function () {
-    console.log('listening on *:5001');
+http.listen(8000, function () {
+    console.log('listening on *:8000');
 
 });
 
