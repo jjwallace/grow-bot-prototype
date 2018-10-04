@@ -14,6 +14,8 @@ app.get('/', function (req, res) {
 app.use(express.static('js'));
 app.use(express.static('css'));
 
+var data;
+
 io.on('connection', function (socket) {
     console.log("A New User Connected");
     
@@ -21,10 +23,9 @@ io.on('connection', function (socket) {
 
     socket.on('server', function () {
 
-        var data = publishTelemetry();
         io.emit('server', data);
         
-        console.log(data);
+        
 
     });
 
@@ -34,6 +35,15 @@ http.listen(5001, function () {
     console.log('listening on *:5001');
 
 });
+
+console.log('SERVER ONLINE!');
+
+setInterval(myTimer, 100);
+
+function myTimer() {
+    data = publishTelemetry();
+    console.log(data);
+}
 
 const minTemperature = 17.5,
     maxTemperature = 30,
@@ -62,8 +72,8 @@ function publishTelemetry() {
     data.temperature = genNextValue(data.temperature, minTemperature, maxTemperature) + modifier/tempMod;
     data.humidity = genNextValue(data.humidity, minHumidity, maxHumidity) + modifier;
     
-    if(data.humidity > 50){data.humidity -= 2}
-    if(data.temperature < 70){data.temperature += 0.6}
+    if(data.humidity > 50){data.humidity -= 1}
+    if(data.temperature < 70){data.temperature += 0.3}
     
     return data;
 }
