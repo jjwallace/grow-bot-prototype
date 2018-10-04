@@ -1,0 +1,26 @@
+{
+  "name": "Grow Bot Prototype",
+  "version": "0.0.1",
+  "keywords": [
+    "Humidity",
+    "Tempurature",
+    "Server",
+    "D3.js",
+    "Socket.io",
+    "Node.js OS"
+  ],
+  "bugs": {
+    "url": "https://github.com/jjwallace/grow-bot-prototype/issues",
+    "email": "jjaywallace@gmail.com.com"
+  },
+  "description": "Data monitoring for a prototype running pycom wipy",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.4",
+    "socket.io": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jjwallace/grow-bot-prototype.git"
+  }
+}

@@ -1,0 +1,76 @@
+// Documentation see http://techarena51.com/index.php/visualizing-linux-server-resource-usage-with-socket-io-and-d3-js-gauges/
+
+var express = require('express');
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+//var os = require('os');
+//var cpu = require('./anotherClass.js');
+
+app.get('/', function (req, res) {
+    res.sendFile(__dirname + '/index.html');
+});
+
+app.use(express.static('js'));
+app.use(express.static('css'));
+
+io.on('connection', function (socket) {
+    console.log("A New User Connected");
+    
+    //DATA REQUEST
+
+    socket.on('server', function () {
+
+        var data = publishTelemetry();
+        io.emit('server', data);
+        
+        console.log(data);
+
+    });
+
+});
+
+http.listen(5001, function () {
+    console.log('listening on *:5001');
+
+});
+
+const minTemperature = 17.5,
+    maxTemperature = 30,
+    minHumidity = 12,
+    maxHumidity = 90,
+    multiplier = 1;
+
+// Initialization of temperature and humidity data with random values
+var data = {
+    temperature: minTemperature + (maxTemperature - minTemperature) * Math.random(),
+    humidity: minHumidity + (maxHumidity - minHumidity) * Math.random()
+};
+
+var counter = 0;
+var counterMax = 60;
+
+function publishTelemetry() {
+    var modifier = 0;
+    var tempMod = -3;
+    counter ++;
+    if(counter > counterMax){
+        counter = 0;
+        modifier = 40;
+        
+    }
+    data.temperature = genNextValue(data.temperature, minTemperature, maxTemperature) + modifier/tempMod;
+    data.humidity = genNextValue(data.humidity, minHumidity, maxHumidity) + modifier;
+    
+    if(data.humidity > 50){data.humidity -= 2}
+    if(data.temperature < 70){data.temperature += 0.6}
+    
+    return data;
+}
+
+// Generates new random value that is within 3% range from previous value
+function genNextValue(prevValue, min, max) {
+    var value = prevValue + ((max - min) * (Math.random() - (0.5*multiplier)) * (0.03*multiplier));
+    value = Math.max(min, Math.min(max, value));
+    return Math.round(value * 10) / 10;
+}
