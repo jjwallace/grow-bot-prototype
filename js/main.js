@@ -1,20 +1,18 @@
 // Initialize a socket
-
 var socket = io();
-
+var updateSpeed = 500; //milliseconds
 var gauges = [];
+var graphs = [];
 
 function createGauge(name, label, min, max)	{
-	
     var config = {
         size: 220,
         label: label,
         min: undefined != min ? min : 0,
         max: undefined != max ? max : 100,
         minorTicks: 5,
-        transitionDuration: 200
-    }
-				
+        transitionDuration: 500
+    }			
     var range = config.max - config.min;
     config.yellowZones = [{ from: config.min + range*0.75, to: config.min + range*0.9 }];
     config.redZones = [{ from: config.min + range*0.9, to: config.max }];
@@ -22,8 +20,6 @@ function createGauge(name, label, min, max)	{
     gauges[name] = new Gauge(name + "GaugeContainer", config);
     gauges[name].render();
 }
-
-var graphs = [];
 
 function createGraph(name, label, min, max)	{
 	
@@ -51,15 +47,13 @@ function createGauges(){
 }
                     
 function updateGauges()	{
-            
+    //SEND MESSAGE TO SERVER   
     socket.emit('server', {});
-
-    socket.on('server', function(data){            
-            
+    
+    //RECEIVE MESSAGE FROM SERVER
+    socket.on('server', function(data){           
         var temperature = data.temperature;   
         var humidity = data.humidity;  
-             
-        //console.log(data);
         
         for (var key in gauges){  
             if (key == "humidity") {
@@ -83,5 +77,5 @@ function updateGauges()	{
 			
 function initialize(){
   createGauges();
-  setInterval(updateGauges, 500);
+  setInterval(updateGauges, updateSpeed);
 }

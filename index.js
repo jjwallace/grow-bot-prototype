@@ -1,5 +1,3 @@
-// Documentation see http://techarena51.com/index.php/visualizing-linux-server-resource-usage-with-socket-io-and-d3-js-gauges/
-
 var express = require('express');
 var app = require('express')();
 var http = require('http').Server(app);
@@ -20,20 +18,13 @@ io.on('connection', function (socket) {
     console.log("A New User Connected");
     
     //DATA REQUEST
-
     socket.on('server', function () {
-
         io.emit('server', data);
-        
-        
-
     });
-
 });
 
 http.listen(8000, function () {
     console.log('listening on *:8000');
-
 });
 
 console.log('SERVER ONLINE!');
@@ -67,7 +58,6 @@ function publishTelemetry() {
     if(counter > counterMax){
         counter = 0;
         modifier = 40;
-        
     }
     data.temperature = genNextValue(data.temperature, minTemperature, maxTemperature) + modifier/tempMod;
     data.humidity = genNextValue(data.humidity, minHumidity, maxHumidity) + modifier;
