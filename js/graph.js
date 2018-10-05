@@ -88,6 +88,17 @@ function Graph(placeholderName, configuration) {
                 .attr("d", line)
                 .attr("transform", null);
             
+          var duration = 1000;
+            
+          var transition = d3
+                    .transition() 
+                    .duration(duration)
+                    .ease(d3.easeLinear);
+            
+          d3.select(".xaxis")
+                .transition(transition)
+                .call(d3.axisBottom(x));
+            
           // Slide it to the left.
           d3.active(this)
                 .attr("transform", "translate(" + x(-1) + ",0)")

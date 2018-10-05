@@ -2,6 +2,7 @@ function Gauge(placeholderName, configuration) {
     this.placeholderName = placeholderName;
 
     var self = this; // for internal d3 functions
+    var tempValue;
 
     this.configure = function (configuration) {
         this.config = configuration;
@@ -214,6 +215,7 @@ function Gauge(placeholderName, configuration) {
     }
 
     this.redraw = function (value, transitionDuration) {
+        tempValue = value;
         var pointerContainer = this.body.select(".pointerContainer");
         
         var displayValue = parseFloat(Math.round(value * 100) / 100).toFixed(2);
@@ -223,22 +225,23 @@ function Gauge(placeholderName, configuration) {
         var pointer = pointerContainer.selectAll("path");
         pointer.transition()
             .duration(undefined != transitionDuration ? transitionDuration : this.config.transitionDuration)
-            //.delay(0)
             //.ease("linear")
-            //.attr("transform", function(d)
-            .attrTween("transform", function () {
-                var pointerValue = value;
-                if (value > self.config.max) pointerValue = self.config.max + 0.02 * self.config.range;
-                else if (value < self.config.min) pointerValue = self.config.min - 0.02 * self.config.range;
-                var targetRotation = (self.valueToDegrees(pointerValue) - 90);
-                var currentRotation = self._currentRotation || targetRotation;
-                self._currentRotation = targetRotation;
+            .attrTween("transform", self.takeStep);
+    }
+    
+    this.takeStep = function () {
+        var value = tempValue;
+        var pointerValue = value;
+        if (value > self.config.max) pointerValue = self.config.max + 0.02 * self.config.range;
+        else if (value < self.config.min) pointerValue = self.config.min - 0.02 * self.config.range;
+        var targetRotation = (self.valueToDegrees(pointerValue) - 90);
+        var currentRotation = self._currentRotation || targetRotation;
+        self._currentRotation = targetRotation;
 
-                return function (step) {
-                    var rotation = currentRotation + (targetRotation - currentRotation) * step;
-                    return "translate(" + self.config.cx + ", " + self.config.cy + ") rotate(" + rotation + ")";
-                }
-            });
+        return function (step) {
+            var rotation = currentRotation + (targetRotation - currentRotation) * step;
+            return "translate(" + self.config.cx + ", " + self.config.cy + ") rotate(" + rotation + ")";
+        }
     }
 
     this.valueToDegrees = function (value) {
